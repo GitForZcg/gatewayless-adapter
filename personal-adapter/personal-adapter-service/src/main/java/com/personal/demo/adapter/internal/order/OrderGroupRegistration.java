@@ -1,0 +1,20 @@
+package com.personal.demo.adapter.internal.order;
+
+import com.personal.demo.enu.internal.node.OrderNode;
+import com.personal.demo.request.group.ValidationGroups;
+import com.personal.demo.rule.registry.AbstractValidationGroupRegistry;
+import org.springframework.stereotype.Component;
+
+/**
+ * @author zhangjunyi
+ * @version 1.0
+ * @description: 订单验证组注册
+ * @date 2025/7/2 10:44
+ */
+@Component
+public class OrderGroupRegistration extends AbstractValidationGroupRegistry<OrderNode> {
+
+    public OrderGroupRegistration() {
+        super(OrderNode.class, ValidationGroups.orderGroup.class);
+    }
+}

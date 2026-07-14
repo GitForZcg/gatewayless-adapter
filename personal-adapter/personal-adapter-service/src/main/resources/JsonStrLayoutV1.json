@@ -1,0 +1,64 @@
+{
+  "thread_name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "trace_id": {
+    "$resolver": "caseConverter",
+    "case": "lower",
+    "input": {
+      "$resolver": "mdc",
+      "key": "serial"
+    },
+    "errorHandlingStrategy": "replace",
+    "replacement": "unknown"
+  },
+  "exception": {
+    "exception_class": {
+      "$resolver": "exception",
+      "field": "className"
+    },
+    "exception_message": {
+      "$resolver": "exception",
+      "field": "message"
+    },
+    "stacktrace": {
+      "$resolver": "exception",
+      "field": "stackTrace",
+      "stackTrace": {
+        "stringified": true
+      }
+    }
+  },
+  "line_number": {
+    "$resolver": "source",
+    "field": "lineNumber"
+  },
+  "class": {
+    "$resolver": "source",
+    "field": "className"
+  },
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "@timestamp": {
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd HH:mm:ss.SSS",
+      "timeZone": "Asia/Shanghai"
+    }
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "file": {
+    "$resolver": "source",
+    "field": "fileName"
+  },
+  "method": {
+    "$resolver": "source",
+    "field": "methodName"
+  }
+}

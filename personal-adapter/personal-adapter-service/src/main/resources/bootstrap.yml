@@ -1,0 +1,16 @@
+
+spring:
+  application:
+    name: adapter
+  profiles:
+    active: test
+    include:
+      - ${spring.profiles.active}
+  cloud:
+    polaris:
+      namespace: ${spring.profiles.active}
+      config:
+        groups:
+          - name: ${spring.application.name}
+            files: [ "changeable.yml" ]
+        auto-refresh: true

@@ -1,0 +1,9 @@
+{
+  "outPath": "./src/main/resources/static/doc",
+  "allInOne": true,
+  "showAuthor": false,
+  "packageFilters": "",
+  "openUrl": "http://172.21.16.6:7700/api",
+  "appToken": "",
+  "allInOneDocFileName": ""
+}

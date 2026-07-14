@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 720" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arw" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <text x="470" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2937">personal-adapter 请求处理流程</text>
+
+  <!-- 1 调用方 -->
+  <rect x="235" y="54" width="470" height="50" rx="10" fill="#eef2f7" stroke="#c3cddb"/>
+  <text x="470" y="84" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">调用方 · 外部渠道 / 内部服务</text>
+
+  <line x1="470" y1="104" x2="470" y2="140" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arw)"/>
+  <text x="482" y="126" font-size="12.5" fill="#4b5563">POST /adapter/execute  { type, node, params }</text>
+
+  <!-- 2 拦截层 -->
+  <rect x="235" y="142" width="470" height="64" rx="10" fill="#fff4e6" stroke="#f0b866"/>
+  <text x="470" y="168" text-anchor="middle" font-size="16" font-weight="600" fill="#8a5a12">拦截层 · WhitelistHandleInterceptor</text>
+  <text x="470" y="190" text-anchor="middle" font-size="13" fill="#8a5a12">白名单准入（DB 配置·可热刷新）　→　入站验签（SM2 / MD5）</text>
+
+  <line x1="470" y1="206" x2="470" y2="242" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arw)"/>
+  <text x="482" y="228" font-size="12" fill="#9ca3af">业务层只拿到「已鉴权·已验签」的干净请求</text>
+
+  <!-- 3 参数转换 -->
+  <rect x="235" y="244" width="470" height="58" rx="10" fill="#eef2f7" stroke="#c3cddb"/>
+  <text x="470" y="269" text-anchor="middle" font-size="15.5" font-weight="600" fill="#1f2937">① 参数转换　converterFactory.getConverter(type)</text>
+  <text x="470" y="289" text-anchor="middle" font-size="13" fill="#4b5563">各方异构报文 → 内部统一模型 AbstractBaseParams</text>
+
+  <line x1="470" y1="302" x2="470" y2="336" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arw)"/>
+
+  <!-- 4 分组校验 -->
+  <rect x="235" y="338" width="470" height="52" rx="10" fill="#eef2f7" stroke="#c3cddb"/>
+  <text x="470" y="362" text-anchor="middle" font-size="15.5" font-weight="600" fill="#1f2937">② 分组校验　按 node 选校验分组</text>
+  <text x="470" y="381" text-anchor="middle" font-size="12.5" fill="#4b5563">同一 DTO 不同动作复用不同规则</text>
+
+  <line x1="470" y1="390" x2="470" y2="424" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arw)"/>
+
+  <!-- 5 二维分发（核心） -->
+  <rect x="205" y="426" width="530" height="82" rx="12" fill="#e6f6ee" stroke="#2f9e6e" stroke-width="2"/>
+  <text x="470" y="452" text-anchor="middle" font-size="16" font-weight="700" fill="#1f7a52">③ 二维分发（核心）</text>
+  <text x="470" y="475" text-anchor="middle" font-size="14" fill="#1f7a52">flow = flowRegistry.getFlow(type)　×　handler = actionHandlers.get(node)</text>
+  <text x="470" y="496" text-anchor="middle" font-size="13" fill="#2f855a">handler.handle(flow, params, node) → FlowProcessor 执行；未实现该动作则优雅降级</text>
+
+  <line x1="470" y1="508" x2="470" y2="544" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arw)"/>
+  <text x="482" y="530" font-size="12" fill="#9ca3af">仅当需要对外调下游时 ↓</text>
+
+  <!-- 6 出站 -->
+  <rect x="235" y="546" width="470" height="58" rx="10" fill="#eaf1fb" stroke="#8fb3e0"/>
+  <text x="470" y="571" text-anchor="middle" font-size="15.5" font-weight="600" fill="#1d4f91">④ 出站调下游</text>
+  <text x="470" y="591" text-anchor="middle" font-size="13" fill="#1d4f91">域名解析 DomainResolverRegistry → 出站加签 SignatureProcessor → Feign / HTTP</text>
+
+  <line x1="470" y1="604" x2="470" y2="638" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arw)"/>
+
+  <!-- 7 下游 -->
+  <rect x="285" y="640" width="370" height="46" rx="10" fill="#eef2f7" stroke="#c3cddb"/>
+  <text x="470" y="668" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">下游外部系统 / 三方服务</text>
+
+  <!-- 右侧：装配/扩展 说明 -->
+  <line x1="735" y1="467" x2="775" y2="467" stroke="#9aa5b4" stroke-width="1.4" stroke-dasharray="4 3"/>
+  <rect x="775" y="360" width="150" height="214" rx="10" fill="#fafbfc" stroke="#d5dbe4"/>
+  <text x="850" y="384" text-anchor="middle" font-size="13.5" font-weight="700" fill="#374151">只做加法</text>
+  <text x="787" y="410" font-size="12" fill="#4b5563">转换器 · 签名策略</text>
+  <text x="787" y="430" font-size="12" fill="#4b5563">节点 / 流程注册表</text>
+  <text x="787" y="454" font-size="12" fill="#4b5563">全靠 Spring List</text>
+  <text x="787" y="472" font-size="12" fill="#4b5563">注入自动收集</text>
+  <text x="787" y="500" font-size="12" fill="#2f855a">新增系统 / 动作 /</text>
+  <text x="787" y="518" font-size="12" fill="#2f855a">加签算法 =</text>
+  <text x="787" y="536" font-size="12" fill="#2f855a">加一个实现类</text>
+  <text x="787" y="558" font-size="12" fill="#4b5563">核心零改动</text>
+
+  <!-- 左侧：加解密可插拔 说明 -->
+  <line x1="205" y1="467" x2="165" y2="467" stroke="#9aa5b4" stroke-width="1.4" stroke-dasharray="4 3"/>
+  <rect x="15" y="388" width="150" height="158" rx="10" fill="#fafbfc" stroke="#d5dbe4"/>
+  <text x="90" y="412" text-anchor="middle" font-size="13.5" font-weight="700" fill="#374151">加解密可插拔</text>
+  <text x="27" y="438" font-size="12" fill="#4b5563">策略 + @Signature</text>
+  <text x="27" y="458" font-size="12" fill="#4b5563">注解声明</text>
+  <text x="27" y="480" font-size="12" fill="#4b5563">Spring 自动装配</text>
+  <text x="27" y="504" font-size="12" fill="#2f855a">内置 SM2 / MD5</text>
+  <text x="27" y="526" font-size="12" fill="#4b5563">入站验签 · 出站加签</text>
+</svg>

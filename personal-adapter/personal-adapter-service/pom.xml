@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.personal</groupId>
+		<artifactId>personal-cloud-parent-db</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+	<groupId>com.personal.demo</groupId>
+	<artifactId>personal-adapter-service</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>personal-adapter-service</name>
+	<description>适配样例服务</description>
+	<packaging>jar</packaging>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.common</groupId>
+				<artifactId>common-bom</artifactId>
+				<version>1.4.0-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.personal.common</groupId>
+				<artifactId>personal-bom</artifactId>
+				<version>3.0.0-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>2.3.3</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>com.common.redis</groupId>
+			<artifactId>common-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.common.log</groupId>
+			<artifactId>common-log</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.common.wrapper-base</groupId>
+			<artifactId>common-wrapper-base</artifactId>
+		</dependency>
+        <dependency>
+			<groupId>com.common.demo</groupId>
+			<artifactId>personal-adapter-dto</artifactId>
+        </dependency>
+		<!--        mybatisplus多数据源配置-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.personal.order</groupId>
+			<artifactId>personal-order-dto</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.personal.order</groupId>
+			<artifactId>personal-order-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.personal.store</groupId>
+			<artifactId>personal-store-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.personal.member</groupId>
+			<artifactId>personal-member-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.personal.product</groupId>
+			<artifactId>personal-product-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.common.demo</groupId>
+			<artifactId>personal-adapter-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.personal.pay</groupId>
+			<artifactId>personal-pay-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.common.oss</groupId>
+			<artifactId>common-oss</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.common.mq</groupId>
+			<artifactId>mq-consumer</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.shalousun</groupId>
+				<artifactId>smart-doc-maven-plugin</artifactId>
+				<version>2.7.3</version>
+				<configuration>
+					<!--指定生成文档的使用的配置文件,配置文件放在自己的项目中-->
+					<configFile>./src/main/resources/smart-doc.json</configFile>
+					<!--指定项目名称，推荐使用动态参数-->
+					<!--如果smart-doc.json中和此处都未设置projectName，2.3.4开始，插件自动采用pom中的projectName作为设置-->
+					<projectName>Personal平台后台</projectName>
+					<!--smart-doc实现自动分析依赖树加载第三方依赖的源码，如果一些框架依赖库加载不到导致报错，这时请使用excludes排除掉-->
+					<excludes>
+						<!--格式为：groupId:artifactId;参考如下-->
+						<!--也可以支持正则式如：com.alibaba:.* -->
+						<exclude>com.alibaba:fastjson</exclude>
+						<exclude>com.tencent.cloud:.*</exclude>
+					</excludes>
+					<!--includes配置用于配置加载外部依赖源码,配置后插件会按照配置项加载外部源代码而不是自动加载所有，因此使用时需要注意-->
+					<!--smart-doc能自动分析依赖树加载所有依赖源码，原则上会影响文档构建效率，因此你可以使用includes来让插件加载你配置的组件-->
+					<includes>
+						<!--格式为：groupId:artifactId;参考如下-->
+						<!--也可以支持正则式如：com.alibaba:.* -->
+						<!-- 使用了mybatis-plus的Page分页需要include所使用的源码包 -->
+						<!--                        <include>com.baomidou:mybatis-plus-extension</include>-->
+						<!-- 使用了mybatis-plus的IPage分页需要include mybatis-plus-core-->
+						<!--                        <include>com.baomidou:mybatis-plus-core</include>-->
+						<!-- 如果配置了includes的情况下， 使用了jpa的分页需要include所使用的源码包 -->
+						<!--                        <include>org.springframework.data:spring-data-commons</include>-->
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<!--如果不需要在执行编译时启动smart-doc，则将phase注释掉-->
+						<phase>compile</phase>
+						<goals>
+							<!--smart-doc提供了html、openapi、markdown等goal，可按需配置-->
+							<goal>html</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>17</source> <!-- depending on your project -->
+					<target>17</target> <!-- depending on your project -->
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.20</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>1.5.5.Final</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>0.1.0</version>
+						</path>
+						<!-- other annotation processors -->
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<mainClass>com.personal.demo.DemoAdapterApplication</mainClass>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

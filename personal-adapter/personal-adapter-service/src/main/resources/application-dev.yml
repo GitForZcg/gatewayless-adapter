@@ -1,0 +1,122 @@
+spring:
+  data:
+    redis:
+      instances:
+        - name: default
+          host: 127.0.0.1
+          port: 6379
+          password: 123456
+          database: 0
+          timeOut: 3000
+          connectTimeOut: 3000
+          pingConnectionInterval: 30000
+        - name: default_1
+          host: 127.0.0.1
+          port: 6379
+          password: 123456
+          database: 0
+          timeOut: 3000
+          connectTimeOut: 3000
+          pingConnectionInterval: 30000
+
+  datasource:
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 30000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+    dynamic:
+      primary: default #设置默认的数据源或者数据源组,默认值
+      strict: false
+      datasource:
+        default:
+          url: jdbc:mysql://123456:3306/demo_adapter_dev?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true
+          username: root
+          password: REDACTED
+          type: com.alibaba.druid.pool.DruidDataSource
+
+
+thread:
+  pool:
+    core-size: 3         # 核心线程数
+    max-size: 12         # 最大线程数
+    queue-capacity: 20  # 队列容量
+    keep-alive-seconds: 20 # 线程空闲时间
+
+
+oss:
+  access-id: REDACTED
+  access-key: REDACTED
+  account-endpoint: https://www.adapterdemo.com
+  queue-names:
+    - ORDER-DTS-TEST-QUEUE
+  bucket-name: ORDER-DTS-TEST-QUEUE
+  oss-endpoint: https://www.adapterdemo1.com
+  region: cn-beijing
+  maxConnections: 2           # 可选，默认 2
+  maxConnectionsPerRoute: 2    # 可选，默认 2
+  batchSize: 10                # 可选，默认 10（MNS 批量拉取条数）
+  waitSeconds: 2               # 可选，默认 2（MNS 长轮询等待秒数）
+  eventName: ObjectCreated:PutObject
+  key: order_unified
+
+
+rocketmq:
+  consumer:
+    secret-key: REDACTED
+    access-key: REDACTED
+    name-srv-addr: https://www.adapterdemo2.com
+    name-space: MQ_INST_XXXX_dev_1st_namespace
+    group-name: adapter_group
+    # 消费单个topic
+    #topic-name: ${thaw-sheet.mq.finish-thaw.topic}
+    # 消费多个topic
+    topic-names:
+      - ${order-sheet.mq.finish-refund-order.topic}
+      - ${order-sheet.mq.transfer-status-waiting-make.topic}
+      - ${order-sheet.mq.pay-exception.topic}
+    # 消费模式 clustering：集群模式  broadcasting： 广播模式
+    message-model: clustering
+    # 消费位置
+    consume-from-where: CONSUME_FROM_LAST_OFFSET
+    # 重试消费次数
+    max-reconsume-times: 3
+
+order-sheet:
+  mq:
+    finish-refund-order:
+      topic: FINISH_REFUND_ORDER_DEV
+      tag: FINISH_REFUND_ORDER_DEV
+    transfer-status-waiting-make:
+      topic: TRANSFER_WAITING_MAKE_DEV
+      tag: TRANSFER_WAITING_MAKE_DEV
+    pay-exception:
+      topic: PAY_EXCEPTION_DEV
+      tag: PAY_EXCEPTION_DEV
+
+service-request-url:
+  orderBaseUrl: https://www.adapterdemo3.com
+  storeBaseUrl: https://www.adapterdemo4.com
+  paymentBaseUrl: https://www.adapterdemo5.com
+  invoiceBaseUrl: https://www.adapterdemo6.com
+  finishInvoiceBaseUrl: https://www.adapterdemo7.com
+  kpinvoiceBaseUrl: https://www.adapterdemo8.com
+  payBaseUrl: https://www.adapterdemo9.com
+  memberBaseUrl: https://www.adapterdemo10.com
+  services:
+    productBaseUrl: https://www.adapterdemo11.com
+vendor:
+  expenseTypeBizCode: "04.04"
+  tradingPartnerBizCode: DEMO-CODE
+  formSubTypeBizCode: DEMO-CODE
+
+size-no:
+  size: "010"
+
+pm-id:
+  wx: 2
+  djq: 31100298
+  cpq: 31100299
+  cz: 31100292
